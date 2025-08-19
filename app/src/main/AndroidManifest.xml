@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.meltech.updater">
+
+    <application
+        android:label="MEL‑TECH Updater"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.MelTechUpdater">
+
+        <!-- Splash screen is the launcher -->
+        <activity
+    android:name=".SplashActivity"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+
+<activity android:name=".MainActivity" />
+
+    </application>
+</manifest>

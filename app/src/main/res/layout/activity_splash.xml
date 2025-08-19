@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_centerInParent="true"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/versionText"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:text="v1.0.0"
+        android:textColor="#BBBBBB"
+        android:textSize="14sp" />
+</RelativeLayout>

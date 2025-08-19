@@ -1,0 +1,5 @@
+<!-- app/src/main/res/values/strings.xml -->
+<resources>
+    <string name="app_name">MEL-TECH Updater</string>
+    <string name="title">MEL-TECH applications</string>
+</resources>
