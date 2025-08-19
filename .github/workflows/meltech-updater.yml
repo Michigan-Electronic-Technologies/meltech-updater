@@ -61,3 +61,15 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+          - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: MEL‑TECH Updater v${{ env.VERSION }}
+          body: |
+            🔄 Version: v${{ env.VERSION }}
+            📦 APK built from commit ${{ github.sha }}
+            🗓️ Released on ${{ github.event.head_commit.timestamp }}
+          files: |
+            app/build/outputs/apk/debug/app-debug.apk
