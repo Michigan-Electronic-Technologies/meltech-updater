@@ -1,0 +1,68 @@
+name: MEL-TECH CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: 1.0.${{ github.run_number }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Configure Gradle
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+
+      - name: Build APK
+        run: |
+          ./gradlew clean assembleDebug
+          echo "${{ env.VERSION }}" > version.txt
+
+      - name: Upload APK + Version
+        uses: actions/upload-artifact@v4
+        with:
+          name: meltech-updater
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            version.txt
+
+  release:
+    name: Tag Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read version
+        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
+      - name: Create Tag
+        run: |
+          git config user.name "MEL‑TECH CI"
+          git config user.email "ci@melt.tech"
+          git tag -a "v${{ env.VERSION }}" -m "Release v${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
