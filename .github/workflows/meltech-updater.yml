@@ -31,6 +31,7 @@ jobs:
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           echo "android.useAndroidX=true" >> gradle.properties
           echo "android.enableJetifier=true" >> gradle.properties
+          chmod +x gradlew
 
       - name: Build APK
         run: |
@@ -58,11 +59,17 @@ jobs:
       - name: Read version
         run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
 
-      - name: Create Tag
+      - name: Configure Git
         run: |
           git config user.name "MEL‑TECH CI"
           git config user.email "ci@melt.tech"
-          git tag -a "v${{ env.VERSION }}" -m "Release v${{ env.VERSION }}"
-          git push origin "v${{ env.VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git remote set-url origin https://${{ secrets.CI_PUSH_USER }}:${{ secrets.CI_PUSH_TOKEN }}@github.com/michigan-electronic-technologies/meltech-updater.git
+
+      - name: Tag and Push
+        run: |
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            echo "Tag v${{ env.VERSION }} already exists, skipping."
+          else
+            git tag -a "v${{ env.VERSION }}" -m "Release v${{ env.VERSION }}"
+            git push origin "v${{ env.VERSION }}"
+          fi
